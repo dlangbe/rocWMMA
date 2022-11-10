@@ -107,10 +107,10 @@ namespace rocwmma
             /// Initialize reference for validation
 
             // Setup addressing for DataLayout
-            auto rowMjrOffset = [](pair<uint32_t, uint32_t> const& matrixCoord, uint32_t ld) {
+            auto rowMjrOffset = [](std::pair<uint32_t, uint32_t> const& matrixCoord, uint32_t ld) {
                 return get<0>(matrixCoord) * ld + get<1>(matrixCoord);
             };
-            auto colMjrOffset = [](pair<uint32_t, uint32_t> const& matrixCoord, uint32_t ld) {
+            auto colMjrOffset = [](std::pair<uint32_t, uint32_t> const& matrixCoord, uint32_t ld) {
                 return get<1>(matrixCoord) * ld + get<0>(matrixCoord);
             };
             auto ld          = std::is_same<Layout, row_major>::value ? Base::mN : Base::mM;
