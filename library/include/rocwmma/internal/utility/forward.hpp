@@ -24,62 +24,41 @@
  *
  *******************************************************************************/
 
-#ifndef ROCWMMA_GET_HPP
-#define ROCWMMA_GET_HPP
+#ifndef ROCWMMA_FORWARD_UTILITY_HPP
+#define ROCWMMA_FORWARD_UTILITY_HPP
 
-#include "../types.hpp"
-
+#include "../type_traits.hpp"
 namespace rocwmma
 {
     namespace detail
     {
-        template <uint32_t Idx, typename DataT>
-        ROCWMMA_HOST_DEVICE constexpr auto get(DataT&& obj)
+        template <typename T>
+        ROCWMMA_HOST_DEVICE constexpr T&& forward(typename remove_reference<T>::type& t) noexcept
         {
-            return reinterpret_cast<DataT*>(obj)[Idx];
+            return static_cast<T&&>(t);
+        }
+
+        template <typename T>
+        ROCWMMA_HOST_DEVICE constexpr T&& forward(typename remove_reference<T>::type&& t) noexcept
+        {
+            static_assert(!is_lvalue_reference<T>::value,
+                          "template argument substituting T is an lvalue reference type");
+            return static_cast<T&&>(t);
         }
     }
 }
 
 namespace rocwmma
 {
-    // Use custom rocwmma get implementation for cases where STL is not available
-#ifdef __HIPCC_RTC__
-    using detail::get;
+#if defined(__HIPCC_RTC__) || defined(__clang__)
+    // Use custom rocwmma forward implementation for cases where STL is not available
+    using detail::forward;
 
-    // Use STL implementation otherwise
 #else
-#include <tuple>
-    using std::get;
+#include <utility>
+    // Use STL implementation otherwise
+    using std::forward;
+} // namespace rocwmma
 #endif // __HIPCC_RTC__
 
-    // VecT extensions
-    template <uint32_t Idx, typename DataT, uint32_t VecSize>
-    ROCWMMA_HOST_DEVICE constexpr inline DataT& get(HIP_vector_type<DataT, VecSize>& v)
-    {
-        return reinterpret_cast<DataT*>(&v.data)[Idx];
-    }
-
-    template <uint32_t Idx, typename DataT, uint32_t VecSize>
-    ROCWMMA_HOST_DEVICE constexpr inline DataT get(HIP_vector_type<DataT, VecSize> const& v)
-    {
-        return v.data[Idx];
-    }
-
-    // non_native_vector_base extensions
-    template <uint32_t Idx, typename DataT, uint32_t VecSize>
-    ROCWMMA_HOST_DEVICE constexpr static inline DataT&
-        get(non_native_vector_base<DataT, VecSize>& v)
-    {
-        return v[Idx];
-    }
-
-    template <uint32_t Idx, typename DataT, uint32_t VecSize>
-    ROCWMMA_HOST_DEVICE constexpr static inline DataT
-        get(non_native_vector_base<DataT, VecSize> const& v)
-    {
-        return v[Idx];
-    }
-} // namespace rocwmma
-
-#endif // ROCWMMA_GET_HPP
+#endif // ROCWMMA_FORWARD_UTILITY_HPP

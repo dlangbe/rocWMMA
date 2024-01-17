@@ -127,8 +127,8 @@ namespace rocwmma
 ///////////////////////////////////////////////////////////
 /////////////  std replacements for hipRTC  ///////////////
 ///////////////////////////////////////////////////////////
-#if defined(__HIPCC_RTC__)
-namespace std
+// #if defined(__HIPCC_RTC__) || defined(__clang__)
+namespace rocwmma::detail
 {
     template <typename T>
     class numeric_limits
@@ -144,9 +144,6 @@ namespace std
         ROCWMMA_HOST_DEVICE static constexpr T signaling_NaN() noexcept;
         ROCWMMA_HOST_DEVICE static constexpr T denorm_min() noexcept;
     };
-
-    template <bool B, class T = void>
-    using enable_if_t = typename enable_if<B, T>::type;
 
     template <bool B, class T, class F>
     struct conditional
@@ -167,6 +164,38 @@ namespace std
 
     template <bool B, class T, class F>
     using conditional_t = typename conditional<B, T, F>::type;
+
+    template <typename DataT, DataT Val>
+    struct integral_constant
+    {
+        static constexpr DataT                value = Val;
+        typedef DataT                         value_type;
+        typedef integral_constant<DataT, Val> type;
+        constexpr                             operator value_type() const noexcept
+        {
+            return value;
+        }
+        constexpr value_type operator()() const noexcept
+        {
+            return value;
+        }
+    };
+
+    template <typename DataT, DataT Value>
+    constexpr DataT integral_constant<DataT, Value>::value;
+
+    typedef integral_constant<bool, true>  true_type;
+    typedef integral_constant<bool, false> false_type;
+
+    template <typename T1, typename T2>
+    struct is_same : public false_type
+    {
+    };
+
+    template <typename T>
+    struct is_same<T, T> : public true_type
+    {
+    };
 
     template <typename T>
     ROCWMMA_HOST_DEVICE constexpr const T& max(const T& a, const T& b)
@@ -233,6 +262,20 @@ namespace std
     {
     };
 
+    template <bool, typename T = void>
+    struct enable_if
+    {
+    };
+
+    template <typename T>
+    struct enable_if<true, T>
+    {
+        typedef T type;
+    };
+
+    template <bool B, class T = void>
+    using enable_if_t = typename enable_if<B, T>::type;
+
     template <bool __v>
     using __bool_constant = integral_constant<bool, __v>;
 
@@ -282,22 +325,22 @@ namespace std
     {
     };
 
-    // lvalue forwarding
-    template <typename T>
-    constexpr T&& forward(typename remove_reference<T>::type& __t) noexcept
-    {
-        return static_cast<T&&>(__t);
-    }
+    // // lvalue forwarding
+    // template <typename T>
+    // constexpr T&& forward(typename remove_reference<T>::type& __t) noexcept
+    // {
+    //     return static_cast<T&&>(__t);
+    // }
 
-    // rvalue forwarding
-    template <typename T>
-    constexpr T&& forward(typename remove_reference<T>::type&& __t) noexcept
-    {
-        static_assert(!is_lvalue_reference<T>::value,
-                      "template argument"
-                      " substituting T is an lvalue reference type");
-        return static_cast<T&&>(__t);
-    }
+    // // rvalue forwarding
+    // template <typename T>
+    // constexpr T&& forward(typename remove_reference<T>::type&& __t) noexcept
+    // {
+    //     static_assert(!is_lvalue_reference<T>::value,
+    //                   "template argument"
+    //                   " substituting T is an lvalue reference type");
+    //     return static_cast<T&&>(__t);
+    // }
 
     // remove_const
     template <typename T>
@@ -464,7 +507,7 @@ namespace std
     inline constexpr bool is_same_v = is_same<T, U>::value;
 
 } // namespace std
-#endif
+// #endif
 
 namespace std
 {

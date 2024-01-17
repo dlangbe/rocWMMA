@@ -28,7 +28,9 @@
 
 #include "types.hpp"
 
+#include "utility/forward.hpp"
 #include "utility/get.hpp"
+
 #include "vector.hpp"
 
 namespace rocwmma

@@ -213,15 +213,14 @@ namespace rocwmma
     template <typename FragT>
     ROCWMMA_DEVICE static inline decltype(auto) applyTranspose(FragT&& frag)
     {
-        return detail::template ApplyTranspose<std::decay_t<FragT>>::exec(
-            std::forward<FragT>(frag));
+        return detail::template ApplyTranspose<std::decay_t<FragT>>::exec(forward<FragT>(frag));
     }
 
     template <typename DataLayoutT, typename FragT>
     ROCWMMA_DEVICE static inline decltype(auto) applyDataLayout(FragT&& frag)
     {
         return detail::template ApplyDataLayout<std::decay_t<FragT>, DataLayoutT>::exec(
-            std::forward<FragT>(frag));
+            forward<FragT>(frag));
     }
 
 } // namespace rocwmma

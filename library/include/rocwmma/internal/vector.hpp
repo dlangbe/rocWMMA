@@ -395,6 +395,7 @@ ROCWMMA_REGISTER_HIP_NON_NATIVE_VECTOR_TYPE_WITH_INC_DEC_OPS_AS_FLOAT(rocwmma::b
 ROCWMMA_REGISTER_HIP_NON_NATIVE_VECTOR_TYPE_WITH_INC_DEC_OPS_AS_FLOAT(rocwmma::bfloat16_t, 512);
 
 #include "type_traits.hpp"
+#include "utility/forward.hpp"
 #include "utility/get.hpp"
 
 namespace rocwmma
@@ -555,7 +556,7 @@ namespace rocwmma
                       "Vector arguments must all be the same type");
 
         using DataT = typename detail::first_type_t<std::decay_t<Ts>...>;
-        return non_native_vector_base<DataT, sizeof...(Ts)>{std::forward<Ts>(ts)...};
+        return non_native_vector_base<DataT, sizeof...(Ts)>{rocwmma::forward<Ts>(ts)...};
     }
 
     namespace detail
@@ -583,9 +584,9 @@ namespace rocwmma
         constexpr std::size_t Size0 = VecTraits<std::decay_t<decltype(lhs)>>::size();
         constexpr std::size_t Size1 = VecTraits<std::decay_t<decltype(rhs)>>::size();
 
-        return detail::vector_cat_impl(std::forward<Lhs>(lhs),
+        return detail::vector_cat_impl(forward<Lhs>(lhs),
                                        detail::make_index_sequence<Size0>(),
-                                       std::forward<Rhs>(rhs),
+                                       forward<Rhs>(rhs),
                                        detail::make_index_sequence<Size1>());
     }
 
@@ -618,8 +619,7 @@ namespace rocwmma
             using CastT = std::decay_t<T>;
             if constexpr(sizeof...(Ts) >= 1)
             {
-                return BinOp::exec(static_cast<CastT>(t),
-                                   reduceOp_impl<BinOp>(std::forward<Ts>(ts)...));
+                return BinOp::exec(static_cast<CastT>(t), reduceOp_impl<BinOp>(forward<Ts>(ts)...));
             }
             else
             {
@@ -631,7 +631,7 @@ namespace rocwmma
         ROCWMMA_HOST_DEVICE constexpr static inline decltype(auto)
             vector_reduce_impl(VecT&& v, index_sequence<Is...>) noexcept
         {
-            return reduceOp_impl<BinOp>(get<Is>(std::forward<VecT>(v))...);
+            return reduceOp_impl<BinOp>(get<Is>(forward<VecT>(v))...);
         }
 
         // Use with operations that have 1 operands
@@ -640,7 +640,7 @@ namespace rocwmma
             vector_reduce(VecT&& lhs) noexcept
         {
             return vector_reduce_impl<BinOp>(
-                std::forward<VecT>(lhs),
+                forward<VecT>(lhs),
                 detail::make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
         }
     }
@@ -649,7 +649,7 @@ namespace rocwmma
     ROCWMMA_HOST_DEVICE constexpr static inline decltype(auto)
         vector_reduce_and(VecT&& lhs) noexcept
     {
-        return detail::vector_reduce<detail::BitwiseOp::And>(std::forward<VecT>(lhs));
+        return detail::vector_reduce<detail::BitwiseOp::And>(forward<VecT>(lhs));
     }
 
 } // namespace rocwmma

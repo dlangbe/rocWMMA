@@ -101,14 +101,14 @@ namespace rocwmma
         template <typename VecT, std::size_t... Indices>
         constexpr static auto copy_impl(VecT&& t, index_sequence<Indices...>&&)
         {
-            return make_vector(get<Indices>(std::forward<VecT>(t))...);
+            return make_vector(get<Indices>(forward<VecT>(t))...);
         }
     }
 
     template <typename VecT>
     constexpr static auto pop_right(VecT&& t)
     {
-        return detail::copy_impl(std::forward<VecT>(t),
+        return detail::copy_impl(forward<VecT>(t),
                                  make_index_sequence<VecTraits<std::decay_t<VecT>>::size() - 1>{});
     }
 
@@ -116,19 +116,19 @@ namespace rocwmma
     constexpr static auto pop_left(VecT&& t)
     {
         auto pop_front = [](auto front, auto... rest) { return make_vector(rest...); };
-        return apply(pop_front, std::forward<VecT>(t));
+        return apply(pop_front, forward<VecT>(t));
     }
 
     template <typename VecT>
     constexpr static decltype(auto) get_first(VecT&& t)
     {
-        return get<0>(std::forward<VecT>(t));
+        return get<0>(forward<VecT>(t));
     }
 
     template <typename VecT>
     constexpr static decltype(auto) get_last(VecT&& t)
     {
-        return get<VecTraits<std::decay_t<VecT>>::size() - 1u>(std::forward<VecT>(t));
+        return get<VecTraits<std::decay_t<VecT>>::size() - 1u>(forward<VecT>(t));
     }
 
     namespace detail
@@ -136,14 +136,14 @@ namespace rocwmma
         template <typename VecT, std::size_t... Indices>
         constexpr static decltype(auto) reverse_impl(VecT&& t, index_sequence<Indices...>)
         {
-            return make_vector(get<sizeof...(Indices) - 1 - Indices>(std::forward<VecT>(t))...);
+            return make_vector(get<sizeof...(Indices) - 1 - Indices>(forward<VecT>(t))...);
         }
     }
 
     template <typename VecT>
     constexpr static decltype(auto) reverse(VecT&& t)
     {
-        return detail::reverse_impl(std::forward<VecT>(t),
+        return detail::reverse_impl(forward<VecT>(t),
                                     make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
     }
 
@@ -164,9 +164,9 @@ namespace rocwmma
             };
 
             auto mult = typename VecTraits<std::decay_t<Vec0>>::DataT{1};
-            return (flatten(get<Indices>(std::forward<Vec0>(coord)),
-                            get<Indices>(std::forward<Vec1>(dims)),
-                            std::forward<decltype(mult)&>(mult))
+            return (flatten(get<Indices>(forward<Vec0>(coord)),
+                            get<Indices>(forward<Vec1>(dims)),
+                            forward<decltype(mult)&>(mult))
                     + ...);
         }
     }
@@ -175,8 +175,8 @@ namespace rocwmma
     constexpr static decltype(auto) flatten_coord_right(Vec0&& coord, Vec1&& dims)
     {
         return detail::flatten_coord_right_impl(
-            std::forward<Vec0>(coord),
-            std::forward<Vec1>(dims),
+            forward<Vec0>(coord),
+            forward<Vec1>(dims),
             make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
     }
 
@@ -197,9 +197,9 @@ namespace rocwmma
             };
 
             auto mult = typename VecTraits<std::decay_t<Vec0>>::DataT{1};
-            return (flatten(get<sizeof...(Indices) - 1 - Indices>(std::forward<Vec0>(coord)),
-                            get<sizeof...(Indices) - 1 - Indices>(std::forward<Vec1>(dims)),
-                            std::forward<decltype(mult)&>(mult))
+            return (flatten(get<sizeof...(Indices) - 1 - Indices>(forward<Vec0>(coord)),
+                            get<sizeof...(Indices) - 1 - Indices>(forward<Vec1>(dims)),
+                            forward<decltype(mult)&>(mult))
                     + ...);
         }
     }
@@ -208,8 +208,8 @@ namespace rocwmma
     constexpr static decltype(auto) flatten_coord_left(Vec0&& coord, Vec1&& dims)
     {
         return detail::flatten_coord_left_impl(
-            std::forward<Vec0>(coord),
-            std::forward<Vec1>(dims),
+            forward<Vec0>(coord),
+            forward<Vec1>(dims),
             make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
     }
 
@@ -226,9 +226,9 @@ namespace rocwmma
             };
 
             auto div = std::decay_t<Coord1d>{1};
-            return make_vector(inflate(std::forward<Coord1d>(flatCoord),
-                                       get<Indices>(std::forward<VecT>(dims)),
-                                       std::forward<decltype(div)&>(div),
+            return make_vector(inflate(forward<Coord1d>(flatCoord),
+                                       get<Indices>(forward<VecT>(dims)),
+                                       forward<decltype(div)&>(div),
                                        Indices == sizeof...(Indices) - 1)...);
         }
     }
@@ -237,8 +237,8 @@ namespace rocwmma
     constexpr static inline decltype(auto) inflate_coord_right(Coord1d&& flatCoord, VecT&& dims)
     {
         return detail::inflate_coord_right_impl(
-            std::forward<Coord1d>(flatCoord),
-            std::forward<VecT>(dims),
+            forward<Coord1d>(flatCoord),
+            forward<VecT>(dims),
             make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
     }
 
@@ -256,9 +256,9 @@ namespace rocwmma
 
             auto div = std::decay_t<Coord1d>{1};
             return reverse(make_vector(inflate(
-                std::forward<Coord1d>(flatCoord),
-                get<VecTraits<std::decay_t<VecT>>::size() - 1 - Indices>(std::forward<VecT>(dims)),
-                std::forward<decltype(div)&>(div),
+                forward<Coord1d>(flatCoord),
+                get<VecTraits<std::decay_t<VecT>>::size() - 1 - Indices>(forward<VecT>(dims)),
+                forward<decltype(div)&>(div),
                 Indices == sizeof...(Indices) - 1)...));
         }
     }
@@ -267,8 +267,8 @@ namespace rocwmma
     constexpr static inline decltype(auto) inflate_coord_left(Coord1d&& flatCoord, VecT&& dims)
     {
         return detail::inflate_coord_left_impl(
-            std::forward<Coord1d>(flatCoord),
-            std::forward<VecT>(dims),
+            forward<Coord1d>(flatCoord),
+            forward<VecT>(dims),
             make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
     }
 
@@ -284,8 +284,8 @@ namespace rocwmma
 
             auto inflate = [](auto&& stride, auto&& dim) { return stride * dim; };
 
-            return (inflate(get<Indices>(std::forward<Vec0>(strides)),
-                            get<Indices>(std::forward<Vec1>(strideSpace)))
+            return (inflate(get<Indices>(forward<Vec0>(strides)),
+                            get<Indices>(forward<Vec1>(strideSpace)))
                     + ...);
         }
     }
@@ -294,8 +294,8 @@ namespace rocwmma
     constexpr static inline decltype(auto) to_matrix_space(Vec0&& strides, Vec1&& strideSpace)
     {
         return detail::to_matrix_space_impl(
-            std::forward<Vec0>(strides),
-            std::forward<Vec1>(strideSpace),
+            forward<Vec0>(strides),
+            forward<Vec1>(strideSpace),
             make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
     }
 
@@ -305,7 +305,7 @@ namespace rocwmma
     auto& print(std::ostream& os, T&& t, std::index_sequence<I...>&&)
     {
         os << "(";
-        (..., (os << (I == 0 ? "" : ", ") << get<I>(std::forward<T>(t))));
+        (..., (os << (I == 0 ? "" : ", ") << get<I>(forward<T>(t))));
         return os << ")\n";
     }
 
