@@ -163,16 +163,16 @@ namespace rocwmma
             }
         }
 
-        auto eps = toDoubleA(std::numeric_limits<DataT>::epsilon());
+        auto eps = toDoubleA(numeric_limits<DataT>::epsilon());
         if(isInf)
         {
             retval             = false;
-            max_relative_error = std::numeric_limits<DataT>::infinity();
+            max_relative_error = numeric_limits<DataT>::infinity();
         }
         else if(isNaN)
         {
             retval             = false;
-            max_relative_error = std::numeric_limits<DataT>::signaling_NaN();
+            max_relative_error = numeric_limits<DataT>::signaling_NaN();
         }
         else if(max_relative_error > (eps * tolerance))
         {

@@ -27,7 +27,7 @@
 #ifndef ROCWMMA_VECTOR_IMPL_HPP
 #define ROCWMMA_VECTOR_IMPL_HPP
 
-#include "type_traits.hpp"
+#include "utility/type_traits.hpp"
 #include "vector.hpp"
 
 namespace rocwmma
@@ -244,22 +244,6 @@ namespace rocwmma
             };
 
         } // namespace RelationalOp
-
-        // template <class IntT, IntT val>
-        // struct integral_constant
-        // {
-        //     static constexpr IntT value = val;
-        //     using value_type            = IntT;
-        //     using type                  = integral_constant;
-        //     constexpr operator value_type() const noexcept
-        //     {
-        //         return value;
-        //     }
-        //     constexpr value_type operator()() const noexcept
-        //     {
-        //         return value;
-        //     }
-        // };
 
         template <typename Int, Int... Ints>
         struct integer_sequence

@@ -556,7 +556,7 @@ namespace rocwmma
                       "Vector arguments must all be the same type");
 
         using DataT = typename detail::first_type_t<std::decay_t<Ts>...>;
-        return non_native_vector_base<DataT, sizeof...(Ts)>{rocwmma::forward<Ts>(ts)...};
+        return non_native_vector_base<DataT, sizeof...(Ts)>{forward<Ts>(ts)...};
     }
 
     namespace detail

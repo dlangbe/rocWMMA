@@ -242,7 +242,7 @@ __host__ void sgemv_test(uint32_t m, uint32_t n, uint32_t k, float alpha, float 
 
     std::cout << "Validating result with reference..." << std::endl;
     // Bring kernel result back to host
-    std::vector<float32_t> matrixC_device(m, std::numeric_limits<float32_t>::signaling_NaN());
+    std::vector<float32_t> matrixC_device(m, rocwmma::numeric_limits<float32_t>::signaling_NaN());
     CHECK_HIP_ERROR(hipMemcpy(matrixC_device.data(), d_c, bytesC, hipMemcpyDeviceToHost));
 
     // Setup and run reference computation

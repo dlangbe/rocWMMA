@@ -312,16 +312,16 @@ __host__ std::pair<bool, double>
         }
     }
 
-    auto eps = toDouble(std::numeric_limits<DataT>::epsilon());
+    auto eps = toDouble(rocwmma::numeric_limits<DataT>::epsilon());
     if(isInf)
     {
         retval             = false;
-        max_relative_error = std::numeric_limits<DataT>::infinity();
+        max_relative_error = rocwmma::numeric_limits<DataT>::infinity();
     }
     else if(isNaN)
     {
         retval             = false;
-        max_relative_error = std::numeric_limits<DataT>::signaling_NaN();
+        max_relative_error = rocwmma::numeric_limits<DataT>::signaling_NaN();
     }
     else if(max_relative_error > (eps * tolerance))
     {

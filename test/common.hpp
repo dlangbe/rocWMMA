@@ -411,16 +411,16 @@ namespace rocwmma
             }
         }
 
-        auto eps = toDoubleA(std::numeric_limits<TypeA>::epsilon());
+        auto eps = toDoubleA(numeric_limits<TypeA>::epsilon());
         if(isInf)
         {
             retval             = false;
-            max_relative_error = std::numeric_limits<TypeA>::infinity();
+            max_relative_error = numeric_limits<TypeA>::infinity();
         }
         else if(isNaN)
         {
             retval             = false;
-            max_relative_error = double(std::numeric_limits<TypeA>::signaling_NaN());
+            max_relative_error = double(numeric_limits<TypeA>::signaling_NaN());
         }
         else if(max_relative_error > (eps * tolerance))
         {
@@ -500,16 +500,16 @@ namespace rocwmma
             }
         }
 
-        auto eps = toDoubleA(std::numeric_limits<TypeA>::epsilon());
+        auto eps = toDoubleA(numeric_limits<TypeA>::epsilon());
         if(isInf)
         {
             retval             = false;
-            max_relative_error = std::numeric_limits<TypeA>::infinity();
+            max_relative_error = numeric_limits<TypeA>::infinity();
         }
         else if(isNaN)
         {
             retval             = false;
-            max_relative_error = double(std::numeric_limits<TypeA>::signaling_NaN());
+            max_relative_error = double(numeric_limits<TypeA>::signaling_NaN());
         }
         else if(max_relative_error > (eps * tolerance))
         {
@@ -628,11 +628,11 @@ namespace rocwmma
         auto toDoubleA
             = [](TypeA const& val) { return static_cast<double>(static_cast<float>(val)); };
 
-        auto eps = toDoubleA(std::numeric_limits<TypeA>::epsilon());
+        auto eps = toDoubleA(numeric_limits<TypeA>::epsilon());
         if(isNaN)
         {
             retval           = false;
-            maxRelativeError = double(std::numeric_limits<TypeA>::signaling_NaN());
+            maxRelativeError = double(numeric_limits<TypeA>::signaling_NaN());
         }
         else if(maxRelativeError > (eps * tolerance))
         {
@@ -709,11 +709,11 @@ namespace rocwmma
         auto toDoubleA
             = [](TypeA const& val) { return static_cast<double>(static_cast<float>(val)); };
 
-        auto eps = toDoubleA(std::numeric_limits<TypeA>::epsilon());
+        auto eps = toDoubleA(numeric_limits<TypeA>::epsilon());
         if(isNaN)
         {
             retval           = false;
-            maxRelativeError = double(std::numeric_limits<TypeA>::signaling_NaN());
+            maxRelativeError = double(numeric_limits<TypeA>::signaling_NaN());
         }
         else if(maxRelativeError > (eps * tolerance))
         {
@@ -733,7 +733,7 @@ namespace rocwmma
         {
             using TestT = double;
             if(fabs(static_cast<TestT>(val) - static_cast<TestT>(a[i]))
-               <= (tolerance * static_cast<TestT>(std::numeric_limits<DataT>::epsilon())))
+               <= (tolerance * static_cast<TestT>(numeric_limits<DataT>::epsilon())))
             {
 #pragma omp atomic
                 ++count;
@@ -773,7 +773,7 @@ namespace rocwmma
                 {
                     using TestT = float64_t;
                     if(fabs(static_cast<TestT>(padValue) - static_cast<TestT>(mat[idx]))
-                       <= (tolerance * static_cast<TestT>(std::numeric_limits<DataT>::epsilon())))
+                       <= (tolerance * static_cast<TestT>(numeric_limits<DataT>::epsilon())))
                     {
 #pragma omp atomic
                         ++count;

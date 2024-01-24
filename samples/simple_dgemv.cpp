@@ -242,7 +242,8 @@ __host__ void dgemv_test(uint32_t m, uint32_t n, uint32_t k, float64_t alpha, fl
 
     std::cout << "Validating result with reference..." << std::endl;
     // Bring kernel result back to host
-    std::vector<float64_t> matrixC_device(m * 1, std::numeric_limits<float64_t>::signaling_NaN());
+    std::vector<float64_t> matrixC_device(m * 1,
+                                          rocwmma::numeric_limits<float64_t>::signaling_NaN());
     CHECK_HIP_ERROR(hipMemcpy(matrixC_device.data(), d_c, bytesC, hipMemcpyDeviceToHost));
 
     // Setup and run reference computation

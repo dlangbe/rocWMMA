@@ -709,7 +709,7 @@ ROCWMMA_HOST void gemm_test(uint32_t m, uint32_t n, uint32_t k, ComputeT alpha, 
     std::vector<InputT>  matrixB(k * n);
     std::vector<OutputT> matrixC(m * n);
     // Fill outputs with NaN to catch contamination
-    std::vector<OutputT> matrixD(m * n, std::numeric_limits<OutputT>::signaling_NaN());
+    std::vector<OutputT> matrixD(m * n, rocwmma::numeric_limits<OutputT>::signaling_NaN());
 
     fillRand(matrixA.data(), m, k);
     fillRand(matrixB.data(), k, n);
@@ -834,7 +834,7 @@ ROCWMMA_HOST void gemm_test(uint32_t m, uint32_t n, uint32_t k, ComputeT alpha, 
     CHECK_HIP_ERROR(hipMemcpy(matrixD.data(), d_d, bytesD, hipMemcpyDeviceToHost));
 
     // Setup and run reference computation
-    std::vector<OutputT> matrixD_ref(m * n, std::numeric_limits<OutputT>::signaling_NaN());
+    std::vector<OutputT> matrixD_ref(m * n, rocwmma::numeric_limits<OutputT>::signaling_NaN());
     gemm_cpu_h<InputT, OutputT, ComputeT, col_major, row_major, col_major>(m,
                                                                            n,
                                                                            k,

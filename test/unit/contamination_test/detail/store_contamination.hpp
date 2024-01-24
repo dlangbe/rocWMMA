@@ -75,7 +75,7 @@ namespace rocwmma
             MatrixUtil<Layout>::fillValLaunchKernel(dataInstance->deviceOut().get(),
                                                     get<0>(paddedProbSize),
                                                     get<1>(paddedProbSize),
-                                                    std::numeric_limits<DataT>::max());
+                                                    numeric_limits<DataT>::max());
         }
 
         void validateResultsImpl() final
@@ -98,7 +98,7 @@ namespace rocwmma
                                                          Base::mN,
                                                          static_cast<uint32_t>(Base::mParam1),
                                                          static_cast<uint32_t>(Base::mParam2),
-                                                         std::numeric_limits<DataT>::max(),
+                                                         numeric_limits<DataT>::max(),
                                                          errorTolerance);
 
             // All padding must be markers

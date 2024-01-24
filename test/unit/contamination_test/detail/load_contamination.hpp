@@ -73,13 +73,13 @@ namespace rocwmma
                                                             Base::mN,
                                                             uint32_t(Base::mParam1),
                                                             uint32_t(Base::mParam2),
-                                                            std::numeric_limits<DataT>::max());
+                                                            numeric_limits<DataT>::max());
 
             // Initialize device output data with NaN
             MatrixUtil<Layout>::fillValLaunchKernel(dataInstance->deviceOut().get(),
                                                     Base::mM,
                                                     Base::mN,
-                                                    std::numeric_limits<DataT>::signaling_NaN());
+                                                    numeric_limits<DataT>::signaling_NaN());
         }
 
         void validateResultsImpl() final
@@ -98,7 +98,7 @@ namespace rocwmma
             // See if our output contains any contamination
             auto result = countVal(kernelResult.get(),
                                    Base::mM * Base::mN,
-                                   std::numeric_limits<DataT>::max(),
+                                   numeric_limits<DataT>::max(),
                                    errorTolerance);
 
             // We want no contamination

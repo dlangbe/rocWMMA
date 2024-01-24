@@ -160,7 +160,7 @@ __host__ void gemm_test(uint32_t m, uint32_t n, uint32_t k, float32_t alpha, flo
     std::vector<float32_t> matrixB(k * n);
     std::vector<float32_t> matrixC(m * n);
     // Fill outputs with NaN to catch contamination
-    std::vector<float32_t> matrixD(m * n, std::numeric_limits<float32_t>::signaling_NaN());
+    std::vector<float32_t> matrixD(m * n, rocwmma::numeric_limits<float32_t>::signaling_NaN());
 
     fillRand(matrixA.data(), m, k);
     fillRand(matrixB.data(), k, n);
@@ -251,7 +251,7 @@ __host__ void gemm_test(uint32_t m, uint32_t n, uint32_t k, float32_t alpha, flo
     CHECK_HIP_ERROR(hipMemcpy(matrixD.data(), d_d, bytesD, hipMemcpyDeviceToHost));
 
     // Setup and run reference computation
-    std::vector<float32_t> matrixD_ref(m * n, std::numeric_limits<float32_t>::signaling_NaN());
+    std::vector<float32_t> matrixD_ref(m * n, rocwmma::numeric_limits<float32_t>::signaling_NaN());
     gemm_cpu_h<float32_t, float32_t, float32_t, row_major, col_major, row_major>(m,
                                                                                  n,
                                                                                  k,

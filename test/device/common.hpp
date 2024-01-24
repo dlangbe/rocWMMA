@@ -52,12 +52,12 @@ namespace rocwmma
     {
         if(std::isinf(a) || std::isinf(b))
         {
-            return std::numeric_limits<float64_t>::infinity();
+            return numeric_limits<float64_t>::infinity();
         }
         // Check for NaN
         else if(std::isnan(a) || std::isnan(b))
         {
-            return std::numeric_limits<float64_t>::signaling_NaN();
+            return numeric_limits<float64_t>::signaling_NaN();
         }
         return a > b ? a : b;
     }
@@ -111,11 +111,11 @@ namespace rocwmma
             auto divisor   = fabs(toDouble(valA)) + fabs(toDouble(valB)) + 1.0;
             if(std::isinf(numerator) || std::isinf(divisor))
             {
-                relativeError[errorIdx] = std::numeric_limits<float64_t>::infinity();
+                relativeError[errorIdx] = numeric_limits<float64_t>::infinity();
             }
             else if(std::isnan(numerator) || std::isnan(divisor))
             {
-                relativeError[errorIdx] = std::numeric_limits<float64_t>::signaling_NaN();
+                relativeError[errorIdx] = numeric_limits<float64_t>::signaling_NaN();
             }
             else
             {
@@ -150,12 +150,11 @@ namespace rocwmma
             auto divisor   = fabs(toDouble(valA)) + fabs(toDouble(valB)) + 1.0;
             if(std::isinf(numerator) || std::isinf(divisor))
             {
-                relativeError[batchOffset + errorIdx] = std::numeric_limits<float64_t>::infinity();
+                relativeError[batchOffset + errorIdx] = numeric_limits<float64_t>::infinity();
             }
             else if(std::isnan(numerator) || std::isnan(divisor))
             {
-                relativeError[batchOffset + errorIdx]
-                    = std::numeric_limits<float64_t>::signaling_NaN();
+                relativeError[batchOffset + errorIdx] = numeric_limits<float64_t>::signaling_NaN();
             }
             else
             {
