@@ -58,7 +58,7 @@ namespace rocwmma
 #include <utility>
     // Use STL implementation otherwise
     using std::forward;
-} // namespace rocwmma
 #endif // __HIPCC_RTC__
+} // namespace rocwmma
 
 #endif // ROCWMMA_FORWARD_UTILITY_HPP

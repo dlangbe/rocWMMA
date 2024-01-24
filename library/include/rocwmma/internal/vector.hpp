@@ -27,8 +27,6 @@
 #ifndef ROCWMMA_VECTOR_HPP
 #define ROCWMMA_VECTOR_HPP
 
-// #include "types.hpp"
-// #include "types_ext.hpp"
 #if !defined(__HIPCC_RTC__)
 #include <hip/hip_fp16.h>
 #include <hip/hip_vector_types.h>
