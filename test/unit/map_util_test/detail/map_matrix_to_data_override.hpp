@@ -90,7 +90,7 @@ namespace rocwmma
             MatrixUtil<Layout>::fillValLaunchKernel(dataInstance->deviceOut().get(),
                                                     Base::mM,
                                                     Base::mN,
-                                                    std::numeric_limits<DataT>::signaling_NaN());
+                                                    numeric_limits<DataT>::signaling_NaN());
         }
 
         void validateResultsImpl() final

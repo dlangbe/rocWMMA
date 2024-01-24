@@ -577,11 +577,11 @@ ROCWMMA_KERNEL void __launch_bounds__(256) gemm_rocwmma_d(uint32_t       m,
         constexpr auto warpCount = get<0>(warpDims) * get<1>(warpDims);
         constexpr auto splitCountA
             = std::min((uint32_t)GetCoopIOConfig_t<GRBuffA, warpCount>::IOTraits::IOCount,
-                    (uint32_t)GetCoopIOConfig_t<LWBuffA, warpCount>::IOTraits::IOCount);
+                       (uint32_t)GetCoopIOConfig_t<LWBuffA, warpCount>::IOTraits::IOCount);
 
         constexpr auto splitCountB
             = std::min((uint32_t)GetCoopIOConfig_t<GRBuffB, warpCount>::IOTraits::IOCount,
-                    (uint32_t)GetCoopIOConfig_t<LWBuffB, warpCount>::IOTraits::IOCount);
+                       (uint32_t)GetCoopIOConfig_t<LWBuffB, warpCount>::IOTraits::IOCount);
 
         // Scheduling warp order is analogous to row major priority.
         // E.g. Wg = (128, 2) = 2x2 warps
@@ -628,10 +628,10 @@ ROCWMMA_KERNEL void __launch_bounds__(256) gemm_rocwmma_d(uint32_t       m,
         // Local read offsets for mfma frags
         auto ldsReadOffsetA
             = ldsWriteOffsetA
-            + LWBuffAMap1d::fromMatrixCoord(make_coord2d(get<0>(localWarpOffset), 0u), ldsWidth);
+              + LWBuffAMap1d::fromMatrixCoord(make_coord2d(get<0>(localWarpOffset), 0u), ldsWidth);
         auto ldsReadOffsetB
             = ldsWriteOffsetB
-            + LWBuffBMap1d::fromMatrixCoord(make_coord2d(get<1>(localWarpOffset), 0u), ldsWidth);
+              + LWBuffBMap1d::fromMatrixCoord(make_coord2d(get<1>(localWarpOffset), 0u), ldsWidth);
 
         ///
         /// Write prefetch to local
@@ -784,7 +784,7 @@ ROCWMMA_HOST void gemm_test(uint32_t m, uint32_t n, uint32_t k, ComputeT alpha, 
     std::vector<OutputT> matrixC(m * n);
 
     // Fill outputs with NaN to catch contamination
-    std::vector<OutputT> matrixD(m * n, std::numeric_limits<OutputT>::signaling_NaN());
+    std::vector<OutputT> matrixD(m * n, rocwmma::numeric_limits<OutputT>::signaling_NaN());
 
     fillRand(matrixA.data(), m, k);
     fillRand(matrixB.data(), k, n);
@@ -910,7 +910,7 @@ ROCWMMA_HOST void gemm_test(uint32_t m, uint32_t n, uint32_t k, ComputeT alpha, 
     CHECK_HIP_ERROR(hipMemcpy(matrixD.data(), d_d, bytesD, hipMemcpyDeviceToHost));
 
     // Setup and run reference computation
-    std::vector<OutputT> matrixD_ref(m * n, std::numeric_limits<OutputT>::signaling_NaN());
+    std::vector<OutputT> matrixD_ref(m * n, rocwmma::numeric_limits<OutputT>::signaling_NaN());
     gemm_cpu_h<InputT, OutputT, ComputeT, DataLayoutA, DataLayoutB, DataLayoutC>(m,
                                                                                  n,
                                                                                  k,

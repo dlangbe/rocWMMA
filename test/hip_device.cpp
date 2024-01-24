@@ -105,7 +105,7 @@ namespace rocwmma
             CHECK_RSMI_ERROR(rsmi_num_monitor_devices(&smiCount), smiErrorFlag);
             if(!smiErrorFlag)
             {
-                uint32_t smiDeviceIndex = std::numeric_limits<uint32_t>::max();
+                uint32_t smiDeviceIndex = numeric_limits<uint32_t>::max();
                 for(uint32_t smiIndex = 0; smiIndex < smiCount; smiIndex++)
                 {
                     uint64_t rsmiPCIID = 0;
@@ -121,7 +121,7 @@ namespace rocwmma
                     }
                 }
 
-                if(!smiErrorFlag && (smiDeviceIndex != std::numeric_limits<uint32_t>::max()))
+                if(!smiErrorFlag && (smiDeviceIndex != numeric_limits<uint32_t>::max()))
                 {
                     rsmi_frequencies_t freq;
                     CHECK_RSMI_ERROR(

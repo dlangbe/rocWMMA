@@ -513,10 +513,8 @@ namespace rocwmma
             MatrixUtil<LayoutA>::fillLaunchKernel(dataInstance->deviceA().get(), mM, mK);
             MatrixUtil<LayoutB>::fillLaunchKernel(dataInstance->deviceB().get(), mK, mN);
             MatrixUtil<LayoutC>::fillLaunchKernel(dataInstance->deviceC().get(), mM, mN);
-            MatrixUtil<LayoutD>::fillValLaunchKernel(dataInstance->deviceD().get(),
-                                                     mM,
-                                                     mN,
-                                                     std::numeric_limits<OutputT>::signaling_NaN());
+            MatrixUtil<LayoutD>::fillValLaunchKernel(
+                dataInstance->deviceD().get(), mM, mN, numeric_limits<OutputT>::signaling_NaN());
 
             // Copy to host if performing cpu validation
 #if !defined(ROCWMMA_VALIDATE_WITH_ROCBLAS) && defined(ROCWMMA_VALIDATION_TESTS)
@@ -722,11 +720,10 @@ namespace rocwmma
                 dataInstance->copyData(rocwmmaResult, dataInstance->deviceD(), mM * mN);
 
                 // Reset device D with NaN
-                MatrixUtil<LayoutD>::fillValLaunchKernel(
-                    dataInstance->deviceD().get(),
-                    mM,
-                    mN,
-                    std::numeric_limits<OutputT>::signaling_NaN());
+                MatrixUtil<LayoutD>::fillValLaunchKernel(dataInstance->deviceD().get(),
+                                                         mM,
+                                                         mN,
+                                                         numeric_limits<OutputT>::signaling_NaN());
 
                 // Move the ROCWMMA result to host for analysis
                 dataInstance->copyData(dataInstance->hostD(), rocwmmaResult, mM * mN);

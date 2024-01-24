@@ -62,7 +62,7 @@ namespace rocwmma
             MatrixUtil<Layout>::fillValLaunchKernel(dataInstance->deviceOut().get(),
                                                     Base::mM,
                                                     Base::mN,
-                                                    std::numeric_limits<DataT>::signaling_NaN());
+                                                    numeric_limits<DataT>::signaling_NaN());
 
             // Copy init data to device
             // dataInstance->copyData(dataInstance->deviceIn(), dataInstance->hostIn(), sizeD);
