@@ -66,6 +66,12 @@ namespace rocwmma
         return v.data[Idx];
     }
 
+    template <uint32_t Idx, typename DataT, uint32_t VecSize>
+    ROCWMMA_HOST_DEVICE constexpr inline DataT get(HIP_vector_type<DataT, VecSize>&& v)
+    {
+        return v.data[Idx];
+    }
+
     // non_native_vector_base extensions
     template <uint32_t Idx, typename DataT, uint32_t VecSize>
     ROCWMMA_HOST_DEVICE constexpr static inline DataT&
@@ -77,6 +83,13 @@ namespace rocwmma
     template <uint32_t Idx, typename DataT, uint32_t VecSize>
     ROCWMMA_HOST_DEVICE constexpr static inline DataT
         get(non_native_vector_base<DataT, VecSize> const& v)
+    {
+        return v[Idx];
+    }
+
+    template <uint32_t Idx, typename DataT, uint32_t VecSize>
+    ROCWMMA_HOST_DEVICE constexpr static inline DataT
+        get(non_native_vector_base<DataT, VecSize>&& v)
     {
         return v[Idx];
     }

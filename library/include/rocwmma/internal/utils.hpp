@@ -26,8 +26,8 @@
 #ifndef ROCWMMA_UTILS_HPP
 #define ROCWMMA_UTILS_HPP
 
+#include "type_traits.hpp"
 #include "types.hpp"
-
 #include "utility/forward.hpp"
 #include "utility/get.hpp"
 
