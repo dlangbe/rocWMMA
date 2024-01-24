@@ -33,6 +33,7 @@
 
 #endif // !defined(__HIPCC_RTC__)
 
+#include "utility/forward.hpp"
 #include "utils.hpp"
 
 namespace rocwmma
@@ -98,7 +99,7 @@ namespace rocwmma
 
     namespace detail
     {
-        template <typename VecT, std::size_t... Indices>
+        template <typename VecT, size_t... Indices>
         constexpr static auto copy_impl(VecT&& t, index_sequence<Indices...>&&)
         {
             return make_vector(get<Indices>(forward<VecT>(t))...);
@@ -109,7 +110,7 @@ namespace rocwmma
     constexpr static auto pop_right(VecT&& t)
     {
         return detail::copy_impl(forward<VecT>(t),
-                                 make_index_sequence<VecTraits<std::decay_t<VecT>>::size() - 1>{});
+                                 make_index_sequence<VecTraits<decay_t<VecT>>::size() - 1>{});
     }
 
     template <typename VecT>
@@ -128,12 +129,12 @@ namespace rocwmma
     template <typename VecT>
     constexpr static decltype(auto) get_last(VecT&& t)
     {
-        return get<VecTraits<std::decay_t<VecT>>::size() - 1u>(forward<VecT>(t));
+        return get<VecTraits<decay_t<VecT>>::size() - 1u>(forward<VecT>(t));
     }
 
     namespace detail
     {
-        template <typename VecT, std::size_t... Indices>
+        template <typename VecT, size_t... Indices>
         constexpr static decltype(auto) reverse_impl(VecT&& t, index_sequence<Indices...>)
         {
             return make_vector(get<sizeof...(Indices) - 1 - Indices>(forward<VecT>(t))...);
@@ -144,17 +145,17 @@ namespace rocwmma
     constexpr static decltype(auto) reverse(VecT&& t)
     {
         return detail::reverse_impl(forward<VecT>(t),
-                                    make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
+                                    make_index_sequence<VecTraits<decay_t<VecT>>::size()>{});
     }
 
     namespace detail
     {
-        template <typename Vec0, typename Vec1, std::size_t... Indices>
+        template <typename Vec0, typename Vec1, size_t... Indices>
         constexpr static decltype(auto)
             flatten_coord_right_impl(Vec0&& coord, Vec1&& dims, index_sequence<Indices...>)
         {
-            static_assert(VecTraits<std::decay_t<Vec0>>::size() == sizeof...(Indices)
-                              && VecTraits<std::decay_t<Vec1>>::size() == sizeof...(Indices),
+            static_assert(VecTraits<decay_t<Vec0>>::size() == sizeof...(Indices)
+                              && VecTraits<decay_t<Vec1>>::size() == sizeof...(Indices),
                           "coord and dims vectors must be the same size");
 
             auto flatten = [](auto&& c, auto&& d, auto& mul) {
@@ -163,7 +164,7 @@ namespace rocwmma
                 return result;
             };
 
-            auto mult = typename VecTraits<std::decay_t<Vec0>>::DataT{1};
+            auto mult = typename VecTraits<decay_t<Vec0>>::DataT{1};
             return (flatten(get<Indices>(forward<Vec0>(coord)),
                             get<Indices>(forward<Vec1>(dims)),
                             forward<decltype(mult)&>(mult))
@@ -177,17 +178,17 @@ namespace rocwmma
         return detail::flatten_coord_right_impl(
             forward<Vec0>(coord),
             forward<Vec1>(dims),
-            make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
+            make_index_sequence<VecTraits<decay_t<Vec0>>::size()>{});
     }
 
     namespace detail
     {
-        template <typename Vec0, typename Vec1, std::size_t... Indices>
+        template <typename Vec0, typename Vec1, size_t... Indices>
         constexpr static decltype(auto)
             flatten_coord_left_impl(Vec0&& coord, Vec1&& dims, index_sequence<Indices...>)
         {
-            static_assert(VecTraits<std::decay_t<Vec0>>::size() == sizeof...(Indices)
-                              && VecTraits<std::decay_t<Vec1>>::size() == sizeof...(Indices),
+            static_assert(VecTraits<decay_t<Vec0>>::size() == sizeof...(Indices)
+                              && VecTraits<decay_t<Vec1>>::size() == sizeof...(Indices),
                           "coord and dims vectors must be the same size");
 
             auto flatten = [](auto&& c, auto&& d, auto& mul) {
@@ -196,7 +197,7 @@ namespace rocwmma
                 return result;
             };
 
-            auto mult = typename VecTraits<std::decay_t<Vec0>>::DataT{1};
+            auto mult = typename VecTraits<decay_t<Vec0>>::DataT{1};
             return (flatten(get<sizeof...(Indices) - 1 - Indices>(forward<Vec0>(coord)),
                             get<sizeof...(Indices) - 1 - Indices>(forward<Vec1>(dims)),
                             forward<decltype(mult)&>(mult))
@@ -210,12 +211,12 @@ namespace rocwmma
         return detail::flatten_coord_left_impl(
             forward<Vec0>(coord),
             forward<Vec1>(dims),
-            make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
+            make_index_sequence<VecTraits<decay_t<Vec0>>::size()>{});
     }
 
     namespace detail
     {
-        template <typename Coord1d, typename VecT, std::size_t... Indices>
+        template <typename Coord1d, typename VecT, size_t... Indices>
         constexpr static inline decltype(auto)
             inflate_coord_right_impl(Coord1d&& flatCoord, VecT&& dims, index_sequence<Indices...>)
         {
@@ -225,7 +226,7 @@ namespace rocwmma
                 return result;
             };
 
-            auto div = std::decay_t<Coord1d>{1};
+            auto div = decay_t<Coord1d>{1};
             return make_vector(inflate(forward<Coord1d>(flatCoord),
                                        get<Indices>(forward<VecT>(dims)),
                                        forward<decltype(div)&>(div),
@@ -239,12 +240,12 @@ namespace rocwmma
         return detail::inflate_coord_right_impl(
             forward<Coord1d>(flatCoord),
             forward<VecT>(dims),
-            make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
+            make_index_sequence<VecTraits<decay_t<VecT>>::size()>{});
     }
 
     namespace detail
     {
-        template <typename Coord1d, typename VecT, std::size_t... Indices>
+        template <typename Coord1d, typename VecT, size_t... Indices>
         constexpr static inline decltype(auto)
             inflate_coord_left_impl(Coord1d&& flatCoord, VecT&& dims, index_sequence<Indices...>)
         {
@@ -254,12 +255,12 @@ namespace rocwmma
                 return result;
             };
 
-            auto div = std::decay_t<Coord1d>{1};
-            return reverse(make_vector(inflate(
-                forward<Coord1d>(flatCoord),
-                get<VecTraits<std::decay_t<VecT>>::size() - 1 - Indices>(forward<VecT>(dims)),
-                forward<decltype(div)&>(div),
-                Indices == sizeof...(Indices) - 1)...));
+            auto div = decay_t<Coord1d>{1};
+            return reverse(make_vector(
+                inflate(forward<Coord1d>(flatCoord),
+                        get<VecTraits<decay_t<VecT>>::size() - 1 - Indices>(forward<VecT>(dims)),
+                        forward<decltype(div)&>(div),
+                        Indices == sizeof...(Indices) - 1)...));
         }
     }
 
@@ -269,17 +270,17 @@ namespace rocwmma
         return detail::inflate_coord_left_impl(
             forward<Coord1d>(flatCoord),
             forward<VecT>(dims),
-            make_index_sequence<VecTraits<std::decay_t<VecT>>::size()>{});
+            make_index_sequence<VecTraits<decay_t<VecT>>::size()>{});
     }
 
     namespace detail
     {
-        template <typename Vec0, typename Vec1, std::size_t... Indices>
+        template <typename Vec0, typename Vec1, size_t... Indices>
         constexpr static inline decltype(auto)
             to_matrix_space_impl(Vec0&& strides, Vec1&& strideSpace, index_sequence<Indices...>)
         {
-            static_assert(VecTraits<std::decay_t<Vec0>>::size() == sizeof...(Indices)
-                              && VecTraits<std::decay_t<Vec1>>::size() == sizeof...(Indices),
+            static_assert(VecTraits<decay_t<Vec0>>::size() == sizeof...(Indices)
+                              && VecTraits<decay_t<Vec1>>::size() == sizeof...(Indices),
                           "strides and strideSpace vectors must be the same size");
 
             auto inflate = [](auto&& stride, auto&& dim) { return stride * dim; };
@@ -296,13 +297,13 @@ namespace rocwmma
         return detail::to_matrix_space_impl(
             forward<Vec0>(strides),
             forward<Vec1>(strideSpace),
-            make_index_sequence<VecTraits<std::decay_t<Vec0>>::size()>{});
+            make_index_sequence<VecTraits<decay_t<Vec0>>::size()>{});
     }
 
 #if !defined(__HIPCC_RTC__)
 
     template <class T, size_t... I>
-    auto& print(std::ostream& os, T&& t, std::index_sequence<I...>&&)
+    auto& print(std::ostream& os, T&& t, index_sequence<I...>&&)
     {
         os << "(";
         (..., (os << (I == 0 ? "" : ", ") << get<I>(forward<T>(t))));
@@ -312,7 +313,7 @@ namespace rocwmma
     template <class... ArgsT>
     auto& print(std::ostream& os, std::tuple<ArgsT...> const& t)
     {
-        return print(os, t, std::make_index_sequence<sizeof...(ArgsT)>());
+        return print(os, t, make_index_sequence<sizeof...(ArgsT)>());
     }
 
 #endif // !defined(__HIPCC_RTC__)

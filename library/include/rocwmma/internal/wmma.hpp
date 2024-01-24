@@ -64,26 +64,21 @@ namespace rocwmma
     // int8_t / int32_t
     // Supported block sizes (M, N) = 16
     template <typename InputT, typename ComputeT, uint32_t BlockM, uint32_t BlockN, uint32_t BlockK>
-    struct Wmma<
-        InputT,
-        ComputeT,
-        BlockM,
-        BlockN,
-        BlockK,
-        typename std::enable_if<
-            ((std::is_same<InputT, float16_t>::value && std::is_same<ComputeT, float16_t>::value)
-             || (std::is_same<InputT, float16_t>::value && std::is_same<ComputeT, float32_t>::value)
-             || (std::is_same<InputT, hfloat16_t>::value
-                 && std::is_same<ComputeT, hfloat16_t>::value)
-             || (std::is_same<InputT, hfloat16_t>::value
-                 && std::is_same<ComputeT, float32_t>::value)
-             || (std::is_same<InputT, bfloat16_t>::value
-                 && std::is_same<ComputeT, bfloat16_t>::value)
-             || (std::is_same<InputT, bfloat16_t>::value
-                 && std::is_same<ComputeT, float32_t>::value)
-             || (std::is_same<InputT, int8_t>::value && std::is_same<ComputeT, int32_t>::value))
-            && (BlockM == 16) && (BlockN == 16) && (BlockK >= 16) // 16 block size only
-            >::type>
+    struct Wmma<InputT,
+                ComputeT,
+                BlockM,
+                BlockN,
+                BlockK,
+                typename enable_if<
+                    ((is_same<InputT, float16_t>::value && is_same<ComputeT, float16_t>::value)
+                     || (is_same<InputT, float16_t>::value && is_same<ComputeT, float32_t>::value)
+                     || (is_same<InputT, hfloat16_t>::value && is_same<ComputeT, hfloat16_t>::value)
+                     || (is_same<InputT, hfloat16_t>::value && is_same<ComputeT, float32_t>::value)
+                     || (is_same<InputT, bfloat16_t>::value && is_same<ComputeT, bfloat16_t>::value)
+                     || (is_same<InputT, bfloat16_t>::value && is_same<ComputeT, float32_t>::value)
+                     || (is_same<InputT, int8_t>::value && is_same<ComputeT, int32_t>::value))
+                    && (BlockM == 16) && (BlockN == 16) && (BlockK >= 16) // 16 block size only
+                    >::type>
     {
         // Functional backend
         using WMMA     = detail::amdgcn_wmma<InputT, ComputeT, BlockM, BlockN>;

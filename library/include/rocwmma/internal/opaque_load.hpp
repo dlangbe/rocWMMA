@@ -78,10 +78,7 @@ namespace rocwmma
 
         // Outer loop = index 0,
         // Inner loop = index N-1
-        template <std::size_t Depth = 0,
-                  typename Iterator,
-                  typename StrideCounts,
-                  typename Strides2d>
+        template <size_t Depth = 0, typename Iterator, typename StrideCounts, typename Strides2d>
         ROCWMMA_DEVICE static inline auto unroll_right(Iterator&      out,
                                                        DataT const*   dataPtr,
                                                        uint32_t       ldm,
@@ -92,7 +89,7 @@ namespace rocwmma
             auto strideCount  = get<Depth>(strideCounts);
 
             // Last depth layer will invoke the load
-            if constexpr(Depth == (VecTraits<std::decay_t<StrideCounts>>::size() - 1u))
+            if constexpr(Depth == (VecTraits<decay_t<StrideCounts>>::size() - 1u))
             {
 #pragma unroll
                 for(int i = 0; i < strideCount; i++)

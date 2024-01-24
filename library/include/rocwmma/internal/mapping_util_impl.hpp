@@ -105,7 +105,7 @@ namespace rocwmma
 
         template <uint32_t TBlockX, uint32_t TBlockY>
         template <bool IsConst /* = (TBlockX > 0u && TBlockY > 0u) */,
-                  typename std::enable_if_t<IsConst>* /* = nullptr */>
+                  enable_if_t<IsConst>* /* = nullptr */>
         ROCWMMA_DEVICE constexpr inline auto WaveSpace<TBlockX, TBlockY>::workgroupDim()
             -> WorkgroupDimT
         {
@@ -114,7 +114,7 @@ namespace rocwmma
 
         template <uint32_t TBlockX, uint32_t TBlockY>
         template <bool IsConst /* = (TBlockX > 0u && TBlockY > 0u) */,
-                  typename std::enable_if_t<!IsConst>* /* = nullptr */>
+                  enable_if_t<!IsConst>* /* = nullptr */>
         ROCWMMA_DEVICE inline auto WaveSpace<TBlockX, TBlockY>::workgroupDim() -> WorkgroupDimT
         {
             return waveCount(make_coord2d(blockDim.x, blockDim.y));

@@ -27,6 +27,7 @@
 #define ROCWMMA_CONVERT_HPP
 
 #include "types.hpp"
+#include "utility/forward.hpp"
 
 namespace rocwmma
 {
