@@ -287,14 +287,15 @@ namespace rocwmma
                     auto odds  = PackUtil::paddedPack(extractOdd(result));
 
                     auto rot = Swizzle::RotateR32<16>::exec(odds);
-                    auto lo  = Blend::Zip16::exec(evens, rot);
-                    auto hi  = Blend::Zip16::exec(rot, evens);
+                    auto lo  = Dpp::Zip16::exec(evens, rot);
+                    auto hi  = Dpp::Zip16::exec(rot, evens);
 
-                    // Step 5 : Gather (half-rotate offset)
-                    auto packed = PackUtil::paddedPack(result);
-                    packed      = Permute::Gather32<VW, 0>::exec(packed);
+                    // Step 4 : Gather (half-rotate offset)
+                    // Note the offset of 16 in hi
+                    lo = Permute::Gather32<VW, 0>::exec(lo);
+                    hi = Permute::Gather32<VW, 16>::exec(hi);
 
-                    return PackUtil::template paddedUnpack<VecSize>(packed);
+                    return PackUtil::template paddedUnpack<VecSize>(concat(lo, hi));
                 }
             };
 
@@ -320,14 +321,29 @@ namespace rocwmma
                     // Step 3 : Unpack groups of 16
                     result = unpackLoHi16(result);
 
-                    // Step 4 : Unpack groups of 32
-                    result = unpackLoHi32(result);
+                    // // Step 4 : Unpack groups of 32
+                    // result = unpackLoHi32(result);
 
-                    // Step 5 : Gather
-                    auto packed = PackUtil::paddedPack(result);
-                    packed      = Permute::GatherWave<VW, 0>::exec(packed);
+                    // // Step 5 : Gather
+                    // auto packed = PackUtil::paddedPack(result);
+                    // packed      = Permute::GatherWave<VW, 0>::exec(packed);
 
-                    return PackUtil::template paddedUnpack<VecSize>(packed);
+                    // return PackUtil::template paddedUnpack<VecSize>(packed);
+
+                    // Step 4 : Unpack groups of 32 (half-rotate offset)
+                    auto lo = PackUtil::paddedPack(extractEven(result));
+                    auto hi = PackUtil::paddedPack(extractOdd(result));
+
+                    auto rot_hi = Permute::RotateWaveR<32>::exec(hi);
+                    hi          = Dpp::Zip32::exec(rot_hi, lo);
+                    lo          = Dpp::Zip32::exec(lo, rot_hi);
+
+                    // Step 4 : Gather (half-rotate offset)
+                    // Note the offset of 32 in hi
+                    lo = Permute::GatherWave<VW, 0>::exec(lo);
+                    hi = Permute::GatherWave<VW, 32>::exec(hi);
+
+                    return PackUtil::template paddedUnpack<VecSize>(concat(lo, hi));
                 }
             };
 
