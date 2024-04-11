@@ -282,6 +282,8 @@ namespace rocwmma
                     // auto packed = PackUtil::paddedPack(result);
                     // packed      = Permute::Gather32<VW, 0>::exec(packed);
 
+                    // return PackUtil::template paddedUnpack<VecSize>(packed);
+
                     // Step 4 : Unpack groups of 16 (half-rotate offset)
                     auto evens = PackUtil::paddedPack(extractEven(result));
                     auto odds  = PackUtil::paddedPack(extractOdd(result));
@@ -290,7 +292,7 @@ namespace rocwmma
                     auto lo  = Dpp::Zip16::exec(evens, rot);
                     auto hi  = Dpp::Zip16::exec(rot, evens);
 
-                    // Step 4 : Gather (half-rotate offset)
+                    // Step 5 : Gather (half-rotate offset)
                     // Note the offset of 16 in hi
                     lo = Permute::Gather32<VW, 0>::exec(lo);
                     hi = Permute::Gather32<VW, 16>::exec(hi);
@@ -338,7 +340,7 @@ namespace rocwmma
                     hi          = Dpp::Zip32::exec(rot_hi, lo);
                     lo          = Dpp::Zip32::exec(lo, rot_hi);
 
-                    // Step 4 : Gather (half-rotate offset)
+                    // Step 5 : Gather (half-rotate offset)
                     // Note the offset of 32 in hi
                     lo = Permute::GatherWave<VW, 0>::exec(lo);
                     hi = Permute::GatherWave<VW, 32>::exec(hi);
@@ -1355,6 +1357,8 @@ namespace rocwmma
                     // // Step 4 : UnpackLoHi16
                     // unpacked_data = unpackLoHi16(unpacked_data);
 
+                    // return unpacked_data;
+
                     // Step 1 : Scatter (half-rotate offset)
                     auto hi = Permute::Scatter32<16, 16>::exec(PackUtil::paddedPack(extractHi(v)));
                     auto lo = Permute::Scatter32<16, 0>::exec(PackUtil::paddedPack(extractLo(v)));
@@ -1414,6 +1418,8 @@ namespace rocwmma
 
                     // // Step 5 : Unpack groups of 32
                     // unpacked_data = unpackLoHi32(unpacked_data);
+
+                    // return unpacked_data;
 
                     // Step 1 : Scatter (half-rotate offset)
                     auto hi

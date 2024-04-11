@@ -248,6 +248,7 @@ namespace rocwmma
             CHECK_HIP_ERROR(hipEventDestroy(stopEvent));
 
             mElapsedTimeMs = float64_t(timeMs);
+            printf("%0.3f\n", mElapsedTimeMs);
         }
     }
 
