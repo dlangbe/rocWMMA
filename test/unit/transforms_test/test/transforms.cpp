@@ -40,12 +40,10 @@ namespace rocwmma
     {
         using Base = UnitTestParams;
 
-        // using Types = typename Base::TestAllSizeTypes;
-        using Types = typename std::tuple<int8_t>;
+        using Types = typename Base::TestAllSizeTypes;
 
         // size of BlockDim dimension
-        // using BlockDim = std::tuple<I<16>, I<32>, I<64>, I<128>, I<256>>;
-        using BlockDim = std::tuple<I<32>, I<64>, I<128>, I<256>>;
+        using BlockDim = std::tuple<I<16>, I<32>, I<64>, I<128>, I<256>>;
 
         using KernelParams = typename CombineLists<BlockDim, VWs, Types>::Result;
 
@@ -79,10 +77,8 @@ namespace rocwmma
         }
     };
 
-    // using AossoaTestParams = TestParams<AossoaGenerator, std::tuple<I<2>, I<4>, I<8>, I<16>>>;
-    // using SoaaosTestParams = TestParams<SoaaosGenerator, std::tuple<I<2>, I<4>, I<8>, I<16>>>;
-    using AossoaTestParams = TestParams<AossoaGenerator, std::tuple<I<16>>>;
-    using SoaaosTestParams = TestParams<SoaaosGenerator, std::tuple<I<16>>>;
+    using AossoaTestParams = TestParams<AossoaGenerator, std::tuple<I<2>, I<4>, I<8>, I<16>>>;
+    using SoaaosTestParams = TestParams<SoaaosGenerator, std::tuple<I<2>, I<4>, I<8>, I<16>>>;
 
 } // namespace rocwmma
 
