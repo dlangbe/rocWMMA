@@ -275,15 +275,6 @@ namespace rocwmma
                     // Step 3 : Unpack groups of 8
                     result = unpackLoHi8(result);
 
-                    // // Step 4 : Unpack groups of 16
-                    // result = unpackLoHi16(result);
-
-                    // // Step 5 : Gather
-                    // auto packed = PackUtil::paddedPack(result);
-                    // packed      = Permute::Gather32<VW, 0>::exec(packed);
-
-                    // return PackUtil::template paddedUnpack<VecSize>(packed);
-
                     // Step 4 : Unpack groups of 16 (half-rotate offset)
                     auto evens = PackUtil::paddedPack(extractEven(result));
                     auto odds  = PackUtil::paddedPack(extractOdd(result));
@@ -322,15 +313,6 @@ namespace rocwmma
 
                     // Step 3 : Unpack groups of 16
                     result = unpackLoHi16(result);
-
-                    // // Step 4 : Unpack groups of 32
-                    // result = unpackLoHi32(result);
-
-                    // // Step 5 : Gather
-                    // auto packed = PackUtil::paddedPack(result);
-                    // packed      = Permute::GatherWave<VW, 0>::exec(packed);
-
-                    // return PackUtil::template paddedUnpack<VecSize>(packed);
 
                     // Step 4 : Unpack groups of 32 (half-rotate offset)
                     auto lo = PackUtil::paddedPack(extractEven(result));
@@ -1340,31 +1322,10 @@ namespace rocwmma
                 {
                     using PackUtil = PackUtil<DataT>;
 
-                    // // Step 1 : Scatter
-                    // auto packed = Permute::Scatter32<16, 0>::exec(PackUtil::paddedPack(v));
+                    // Step 1 : Scatter
+                    auto packed = Permute::Scatter32<16, 0>::exec(PackUtil::paddedPack(v));
 
-                    // auto unpacked_data = PackUtil::template paddedUnpack<16>(packed);
-
-                    // // Step 2 : UnpackLoHi2
-                    // unpacked_data = unpackLoHi2(unpacked_data);
-
-                    // // Step 3 : UnpackLoHi4
-                    // unpacked_data = unpackLoHi4(unpacked_data);
-
-                    // // Step 4 : UnpackLoHi8
-                    // unpacked_data = unpackLoHi8(unpacked_data);
-
-                    // // Step 4 : UnpackLoHi16
-                    // unpacked_data = unpackLoHi16(unpacked_data);
-
-                    // return unpacked_data;
-
-                    // Step 1 : Scatter (half-rotate offset)
-                    auto hi = Permute::Scatter32<16, 16>::exec(PackUtil::paddedPack(extractHi(v)));
-                    auto lo = Permute::Scatter32<16, 0>::exec(PackUtil::paddedPack(extractLo(v)));
-
-                    auto unpacked_data = concat(PackUtil::template paddedUnpack<8>(lo),
-                                                PackUtil::template paddedUnpack<8>(hi));
+                    auto unpacked_data = PackUtil::template paddedUnpack<16>(packed);
 
                     // Step 2 : UnpackLoHi2
                     unpacked_data = unpackLoHi2(unpacked_data);
@@ -1375,17 +1336,10 @@ namespace rocwmma
                     // Step 4 : UnpackLoHi8
                     unpacked_data = unpackLoHi8(unpacked_data);
 
-                    // Step 4 : UnpackLoHi16 (half-rotate offset)
-                    lo = PackUtil::paddedPack(extractEven(unpacked_data));
-                    hi = PackUtil::paddedPack(extractOdd(unpacked_data));
+                    // Step 4 : UnpackLoHi16
+                    unpacked_data = unpackLoHi16(unpacked_data);
 
-                    auto lo_final = Dpp::Driver<DppImpl::Ops::MaskMove, 0x5, 0xF>::exec(lo, hi);
-                    hi            = Dpp::Driver<DppImpl::Ops::MaskMove, 0x5, 0xF>::exec(hi, lo);
-
-                    hi = Swizzle::RotateR32<16>::exec(hi);
-
-                    return concat(PackUtil::template paddedUnpack<8>(lo_final),
-                                  PackUtil::template paddedUnpack<8>(hi));
+                    return unpacked_data;
                 }
             };
 
@@ -1402,32 +1356,10 @@ namespace rocwmma
                 {
                     using PackUtil = PackUtil<DataT>;
 
-                    // // Step 1 : Scatter
-                    // auto packed = Permute::ScatterWave<16, 0>::exec(PackUtil::paddedPack(v));
+                    // Step 1 : Scatter
+                    auto packed = Permute::ScatterWave<16, 0>::exec(PackUtil::paddedPack(v));
 
-                    // auto unpacked_data = PackUtil::template paddedUnpack<16>(packed);
-
-                    // // Step 2 : Unpack groups of 4
-                    // unpacked_data = unpackLoHi4(unpacked_data);
-
-                    // // Step 3 : Unpack groups of 8
-                    // unpacked_data = unpackLoHi8(unpacked_data);
-
-                    // // Step 4 : Unpack groups of 16
-                    // unpacked_data = unpackLoHi16(unpacked_data);
-
-                    // // Step 5 : Unpack groups of 32
-                    // unpacked_data = unpackLoHi32(unpacked_data);
-
-                    // return unpacked_data;
-
-                    // Step 1 : Scatter (half-rotate offset)
-                    auto hi
-                        = Permute::ScatterWave<16, 32>::exec(PackUtil::paddedPack(extractHi(v)));
-                    auto lo = Permute::ScatterWave<16, 0>::exec(PackUtil::paddedPack(extractLo(v)));
-
-                    auto unpacked_data = concat(PackUtil::template paddedUnpack<8>(lo),
-                                                PackUtil::template paddedUnpack<8>(hi));
+                    auto unpacked_data = PackUtil::template paddedUnpack<16>(packed);
 
                     // Step 2 : Unpack groups of 4
                     unpacked_data = unpackLoHi4(unpacked_data);
@@ -1438,17 +1370,10 @@ namespace rocwmma
                     // Step 4 : Unpack groups of 16
                     unpacked_data = unpackLoHi16(unpacked_data);
 
-                    // Step 5 : Unpack groups of 32 (half-rotate offset)
-                    lo = PackUtil::paddedPack(extractEven(unpacked_data));
-                    hi = PackUtil::paddedPack(extractOdd(unpacked_data));
+                    // Step 5 : Unpack groups of 32
+                    unpacked_data = unpackLoHi32(unpacked_data);
 
-                    auto lo_final = Dpp::Driver<DppImpl::Ops::MaskMove, 0x3, 0xF>::exec(lo, hi);
-                    hi            = Dpp::Driver<DppImpl::Ops::MaskMove, 0x3, 0xF>::exec(hi, lo);
-
-                    hi = Permute::RotateWaveR<32>::exec(hi);
-
-                    return concat(PackUtil::template paddedUnpack<8>(lo_final),
-                                  PackUtil::template paddedUnpack<8>(hi));
+                    return unpacked_data;
                 }
             };
 
