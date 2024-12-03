@@ -51,6 +51,7 @@ if( CMAKE_PROJECT_NAME STREQUAL "rocwmma" )
   option( ROCWMMA_BUILD_TESTS "Build rocWMMA tests" ON )
   option( ROCWMMA_BUILD_SAMPLES "Build rocWMMA samples" ON )
   option( ROCWMMA_BUILD_ASSEMBLY "Output assembly files" OFF )
+  option( BUILD_OFFLOAD_COMPRESS "Build rocWMMA with offload compression" ON )
 endif()
 
 if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
@@ -105,11 +106,13 @@ endif()
 
 # Check if offload compression is supported
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("--offload-compress" CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
-if (NOT CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
-  set(CMAKE_NO_BUILTIN_CHRPATH ON)
-elseif(CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
-  set(CMAKE_NO_BUILTIN_CHRPATH OFF)
+if (BUILD_OFFLOAD_COMPRESS)
+  check_cxx_compiler_flag("--offload-compress" CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
+  if (NOT CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
+    set(CMAKE_NO_BUILTIN_CHRPATH ON)
+  elseif(CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
+    set(CMAKE_NO_BUILTIN_CHRPATH OFF)
+  endif()
 endif()
 
 
