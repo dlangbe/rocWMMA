@@ -3,6 +3,12 @@
 Documentation for rocWMMA is available at
 [https://rocm.docs.amd.com/projects/rocWMMA/en/latest](https://rocm.docs.amd.com/projects/rocWMMA/en/latest).
 
+## (Unreleased) rocWMMA 1.7.0 for ROCm 6.4.0
+
+### Changed
+
+* Renamed the CMake option `AMDGPU_TARGETS` to `GPU_TARGETS`
+
 ## (Unreleased) rocWMMA 1.6.0 for ROCm 6.3.0
 
 ### Added
