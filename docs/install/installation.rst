@@ -56,6 +56,10 @@ To install rocWMMA on SLES, use:
 
 Once installed, rocWMMA can be used just like any other library with a C++ API.
 
+.. note::
+ The prebuilt package supports the following targets: ``gfx908``; ``gfx90a``; ``gfx942``; ``gfx1100``; ``gfx1101``; ``gfx1102``; ``gfx1200``; ``gfx1201``
+
+
 Once rocWMMA is installed, you can see the ``rocwmma.hpp`` header file in the ``/opt/rocm/include/rocwmma`` directory.
 You must include only ``rocwmma.hpp``, ``rocwmma_coop.hpp`` and ``rocwmma_transforms.hpp`` in the user code to make calls into rocWMMA.
 Don't directly include other rocWMMA files that are found in ``/opt/rocm/include/internal``.
@@ -90,7 +94,7 @@ Dependencies
 ^^^^^^^^^^^^
 rocWMMA is designed to have minimal external dependencies such that it is light-weight and portable.
 
-* Minimum ROCm version support is 6.0.
+* Minimum ROCm version support is 6.4.
 * Minimum cmake version support is 3.14.
 * Minimum ROCm-cmake version support is 0.8.0.
 * Minimum rocBLAS version support is rocBLAS 4.0.0 for ROCm 6.0* (or ROCm packages rocblas and rocblas-dev).
@@ -185,7 +189,7 @@ Below are the project options available to build rocWMMA library with or without
         -   **Default Value**
     *   -   GPU_TARGETS
         -   Build code for specific GPU target(s)
-        -   ``gfx908:xnack-``; ``gfx90a:xnack-``; ``gfx90a:xnack+``; ``gfx940``; ``gfx941``; ``gfx942``; ``gfx1100``; ``gfx1101``; ``gfx1102``
+        -   ``gfx908``; ``gfx90a``; ``gfx942``; ``gfx1100``; ``gfx1101``; ``gfx1102``; ``gfx1200``; ``gfx1201``
     *   -   ROCWMMA_BUILD_TESTS
         -   Build Tests
         -   ON
