@@ -99,7 +99,6 @@ if (ADDRESS_SANITIZER_ENABLED)
     rocm_check_target_ids(DEFAULT_GPU_TARGETS
         TARGETS "gfx90a:xnack+;gfx942:xnack+" )
 else()
-    #TODO: Remove next line when rocm-cmake fix is available
     rocm_check_target_ids(DEFAULT_GPU_TARGETS
         TARGETS "gfx908;gfx90a;gfx942;gfx1100;gfx1101;gfx1102;gfx1200;gfx1201" )
 endif()
@@ -109,6 +108,7 @@ include(CheckCXXCompilerFlag)
 if (BUILD_OFFLOAD_COMPRESS)
   check_cxx_compiler_flag("--offload-compress" CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
   if (NOT CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
+    #TODO: Remove next line when rocm-cmake fix is available
     set(CMAKE_NO_BUILTIN_CHRPATH ON)
   elseif(CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
     set(CMAKE_NO_BUILTIN_CHRPATH OFF)
