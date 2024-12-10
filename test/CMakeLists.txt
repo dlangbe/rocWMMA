@@ -90,7 +90,7 @@ function(add_rocwmma_test TEST_TARGET TEST_SOURCE)
                              ${ROCWMMA_TEST_INCLUDE_DIRS})
   # Use offload compress flag if it is supported
   if(BUILD_OFFLOAD_COMPRESS AND CXX_COMPILER_SUPPORTS_OFFLOAD_COMPRESS)
-    target_compile_options(${COMPONENT_NAME} PRIVATE "--offload-compress" )
+    target_compile_options(${TEST_TARGET} PRIVATE "--offload-compress" )
   endif()
 
   # Add support to include extended test coverage
